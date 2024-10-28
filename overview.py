@@ -115,7 +115,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             df_filtered_C, use_container_width=True, hide_index=True, height=200
         )
 
-        # # ref per YOP
+        # --- # ref per YOP
         fig_year = px.histogram(
             df_filtered_C,
             x="yearOfProduction",
@@ -125,7 +125,39 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
         st.plotly_chart(fig_year)
 
-        # # reference
+        # --- pourcents
+        df_pourcent = (
+            df_filtered_C.groupby(["brand", "reference"])
+            .agg(count=("reference", "count"))
+            .reset_index()
+        )
+
+        # Calculate the total count for each brand
+        df_pourcent["total_count"] = df_pourcent.groupby("brand")["count"].transform(
+            "sum"
+        )
+
+        # Calculate the percentage
+        df_pourcent["percentage"] = round(
+            df_pourcent["count"] / df_pourcent["total_count"] * 100, 1
+        )  # Multiply by 100 for percentage
+
+        # Drop the 'total_count'
+        df_pourcent.drop(columns="total_count", inplace=True)
+
+        fig = px.bar(
+            df_pourcent,
+            x="reference",
+            y="percentage",
+            color="brand",
+            title="Percentage of References by Brand - Chrono24 Data",
+            labels={"percentage": "Percentage (%)"},
+            text="percentage",
+        )
+        # Show the figure
+        st.plotly_chart(fig, use_container_width=True)
+
+        # --- # reference
         fig = px.histogram(
             df_filtered_C.sort_values("brand", ascending=True),
             x="reference",
@@ -146,7 +178,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             df_filtered_common, use_container_width=True, hide_index=True, height=200
         )
 
-        # # ref per YOP
+        # --- # ref per YOP
         fig_year = px.histogram(
             df_filtered_common,
             x="yearOfProduction",
@@ -156,7 +188,38 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
         st.plotly_chart(fig_year)
 
-        # # reference
+        df_pourcent = (
+            df_filtered_C.groupby(["brand", "reference"])
+            .agg(count=("reference", "count"))
+            .reset_index()
+        )
+
+        # Calculate the total count for each brand
+        df_pourcent["total_count"] = df_pourcent.groupby("brand")["count"].transform(
+            "sum"
+        )
+
+        # Calculate the percentage
+        df_pourcent["percentage"] = round(
+            df_pourcent["count"] / df_pourcent["total_count"] * 100, 1
+        )  # Multiply by 100 for percentage
+
+        # Drop the 'total_count'
+        df_pourcent.drop(columns="total_count", inplace=True)
+
+        fig = px.bar(
+            df_pourcent,
+            x="reference",
+            y="percentage",
+            color="brand",
+            title="Percentage of References by Brand - Chrono24 Data",
+            labels={"percentage": "Percentage (%)"},
+            text="percentage",
+        )
+        # Show the figure
+        st.plotly_chart(fig, use_container_width=True)
+
+        # --- # reference
         fig = px.histogram(
             df_filtered_common.sort_values("brand", ascending=True),
             x="reference",

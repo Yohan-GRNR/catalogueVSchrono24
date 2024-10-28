@@ -16,7 +16,7 @@ page = st.sidebar.radio("Select a page:", ("Overview", "Top 200"))
 
 
 # Load data
-@st.cache
+@st.cache_data
 def load_data(url):
     return pd.read_csv(url)
 
