@@ -14,13 +14,20 @@ st.title("Watch Reference Analysis Dashboard")
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Select a page:", ("Overview", "Top 200"))
 
+
+# Load data
+@st.cache
+def load_data(url):
+    return pd.read_csv(url)
+
+
 try:
-    df_chrono = pd.read_csv(
+    df_chrono = load_data(
         "https://drive.google.com/uc?id=1gPuCoihoOHB-OOrV9IbYaqmIsYSu3dQQ"
-    )  # Chrono24 dataset
-    df_LT = pd.read_csv(
+    )
+    df_LT = load_data(
         "https://drive.google.com/uc?id=1geeUDwGKY14NLtIBBotK9UtC7EoLDicU"
-    )  # Your matching dataset
+    )
 except FileNotFoundError:
     st.error(
         "One or both of the data files could not be found. Please check the file paths."
