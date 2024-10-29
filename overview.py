@@ -107,8 +107,9 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
     # =================================================================================
     # ---------- On Chrono24 datas
-    show_data = st.checkbox("Show Chrono24 details")
-    if show_data:
+    st.markdown("---")
+    show_chrono24_details = st.checkbox("Show Chrono24 details")
+    if show_chrono24_details:
         df_filtered_C.sort_values("yearOfProduction", ascending=True, inplace=True)
 
         st.dataframe(
@@ -123,7 +124,9 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             title="Distribution of Year of Production - Chrono24 data",
             barmode="overlay",
         )
-        st.plotly_chart(fig_year)
+        st.plotly_chart(
+            fig_year, use_container_width=True, key="chrono24_year_distribution"
+        )
 
         # --- pourcents
         df_pourcent = (
@@ -145,7 +148,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         # Drop the 'total_count'
         df_pourcent.drop(columns="total_count", inplace=True)
 
-        fig = px.bar(
+        fig_percentage = px.bar(
             df_pourcent,
             x="reference",
             y="percentage",
@@ -155,10 +158,14 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             text="percentage",
         )
         # Show the figure
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig_percentage,
+            use_container_width=True,
+            key="chrono24_percentage_references",
+        )
 
         # --- # reference
-        fig = px.histogram(
+        fig_reference = px.histogram(
             df_filtered_C.sort_values("brand", ascending=True),
             x="reference",
             color="brand",  # Color by brand
@@ -166,12 +173,15 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             barmode="overlay",
         )
         # Show the figure
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig_reference, use_container_width=True, key="chrono24_reference_by_brand"
+        )
 
     # ---------- On Common datas
-    show_data = st.checkbox("Show in catalogue details (common ref. in both catalogue)")
+    st.markdown("---")
+    show_common_details = st.checkbox("Show details (common ref. in both catalogue)")
 
-    if show_data:
+    if show_common_details:
         df_filtered_common.sort_values("yearOfProduction", ascending=True, inplace=True)
 
         st.dataframe(
@@ -179,14 +189,16 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
 
         # --- # ref per YOP
-        fig_year = px.histogram(
+        fig_year_common = px.histogram(
             df_filtered_common,
             x="yearOfProduction",
             color="brand",
             title="Distribution of Year of Production - Common data",
             barmode="overlay",
         )
-        st.plotly_chart(fig_year)
+        st.plotly_chart(
+            fig_year_common, use_container_width=True, key="common_year_distribution"
+        )
 
         df_pourcent = (
             df_filtered_C.groupby(["brand", "reference"])
@@ -207,7 +219,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         # Drop the 'total_count'
         df_pourcent.drop(columns="total_count", inplace=True)
 
-        fig = px.bar(
+        fig_percentage_common = px.bar(
             df_pourcent,
             x="reference",
             y="percentage",
@@ -217,10 +229,14 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             text="percentage",
         )
         # Show the figure
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig_percentage_common,
+            use_container_width=True,
+            key="common_percentage_references",
+        )
 
         # --- # reference
-        fig = px.histogram(
+        fig_reference_common = px.histogram(
             df_filtered_common.sort_values("brand", ascending=True),
             x="reference",
             color="brand",  # Color by brand
@@ -228,17 +244,23 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             barmode="overlay",
         )
         # Show the figure
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig_reference_common,
+            use_container_width=True,
+            key="common_reference_by_brand",
+        )
 
     # ---------- On Luxtech datas
-    show_data = st.checkbox("Show Luxtech catalogue details")
+    st.markdown("---")
+    show_luxtech_details = st.checkbox("Show Luxtech catalogue details")
 
-    if show_data:
+    if show_luxtech_details:
+
         st.dataframe(
             df_filtered_LT, use_container_width=True, hide_index=True, height=200
         )
 
-        fig = px.histogram(
+        fig_luxtech = px.histogram(
             df_filtered_LT.sort_values("brand", ascending=True),
             x="modelNumber",
             color="brand",  # Color by brand
@@ -246,4 +268,6 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             barmode="overlay",
         )
         # Show the figure
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(
+            fig_luxtech, use_container_width=True, key="luxtech_reference_by_brand"
+        )
