@@ -7,6 +7,10 @@ import plotly.express as px
 from overview import show_overview
 from top_200 import show_top_200
 
+# Set page configuration
+st.set_page_config(layout="wide", page_title="References comparator", page_icon="🔎")
+
+
 # Set the title of the app
 st.title("Watch Reference Analysis Dashboard")
 

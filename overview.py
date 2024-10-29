@@ -7,7 +7,7 @@ import numpy as np
 def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
 
     # Title of the dashboard
-    st.title("Watch Reference Analysis Dashboard")
+    st.header("About datas")
 
     # Create three columns
     col1, col2, col3 = st.columns(3)
@@ -77,7 +77,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             missing_df = pd.DataFrame(
                 {
                     "brand": missing_brands,
-                    "count": ["Not in the catalogue for the moment."]
+                    "count": ["No reference shared for the moment."]
                     * len(missing_brands),
                 }
             )
@@ -92,7 +92,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             round(
                 (
                     df_filtered_common_uniref["count"]
-                    .replace("Not in the catalogue for the moment.", 0)
+                    .replace("No reference shared for the moment.", 0)
                     .astype(float)
                     / df_filtered_C_uniref["count"].astype(float)
                     * 100
