@@ -23,7 +23,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
 
         st.write("\# references in Chrono24 catalogue :")
-        st.dataframe(df_filtered_C_uniref, use_container_width=True, hide_index=True)
+        st.dataframe(df_filtered_C_uniref, use_container_width=False, hide_index=True)
 
     with col3:
 
@@ -51,7 +51,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
                 )
 
         st.write("\# references in Luxtech catalogue :")
-        st.dataframe(df_filtered_LT_uniref, use_container_width=True, hide_index=True)
+        st.dataframe(df_filtered_LT_uniref, use_container_width=False, hide_index=True)
 
     with col2:
         # -------------- Catalogue Common
@@ -82,7 +82,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
                 }
             )
             df_filtered_common_uniref = pd.concat(
-                [df_filtered_common_uniref, missing_df], ignore_index=True
+                [df_filtered_common_uniref, missing_df], ignore_index=False
             )
 
         # Calculate the percentage with a security check
@@ -103,7 +103,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
         st.write("\n \n<== # references shared ==>")
         st.dataframe(
-            df_filtered_common_uniref, use_container_width=True, hide_index=True
+            df_filtered_common_uniref, use_container_width=False, hide_index=True
         )
     # =================================================================================
     # ---------- On Chrono24 datas

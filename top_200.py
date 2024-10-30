@@ -21,7 +21,7 @@ def show_top_200(df_filtered_C, df_filtered_LT, selected_brands):
         df_200ref = df_200ref.head(200)
 
         st.write("Top 200 References")
-        st.dataframe(df_200ref, use_container_width=True, hide_index=True)
+        st.dataframe(df_200ref, use_container_width=False, hide_index=True)
 
     with col2:
         # Create top200 reference with Year of Production
@@ -35,7 +35,7 @@ def show_top_200(df_filtered_C, df_filtered_LT, selected_brands):
         df_200ref_YOP = df_200ref_YOP.head(200)
 
         st.write("Top 200 References - YOP")
-        st.dataframe(df_200ref_YOP, use_container_width=True, hide_index=True)
+        st.dataframe(df_200ref_YOP, use_container_width=False, hide_index=True)
 
     st.header("Watch Year of Production Distribution")
 
