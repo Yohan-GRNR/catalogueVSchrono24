@@ -19,7 +19,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             df_filtered_C.drop_duplicates(subset="reference")
             .groupby("brand")
             .size()
-            .reset_index(name="count")
+            .reset_index(name="#")
         )
 
         st.write("\# references in Chrono24 catalogue :")
@@ -33,7 +33,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             df_filtered_LT.drop_duplicates(subset="modelNumber")
             .groupby("brand")
             .size()
-            .reset_index(name="count")
+            .reset_index(name="#")
         )
         for brand in selected_brands:
             if brand not in df_filtered_LT_uniref["brand"].values:
@@ -43,7 +43,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
                         pd.DataFrame(
                             {
                                 "brand": [brand],
-                                "count": "Not in the catalogue for the moment.",
+                                "#": "Not in the catalogue for the moment.",
                             }
                         ),
                     ],
@@ -64,7 +64,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             df_filtered_common.drop_duplicates(subset="reference")
             .groupby("brand")
             .size()
-            .reset_index(name="count")
+            .reset_index(name="#")
         )
         # Create a DataFrame for missing brands
         missing_brands = [
@@ -77,8 +77,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             missing_df = pd.DataFrame(
                 {
                     "brand": missing_brands,
-                    "count": ["No reference shared for the moment."]
-                    * len(missing_brands),
+                    "#": ["No reference shared for the moment."] * len(missing_brands),
                 }
             )
             df_filtered_common_uniref = pd.concat(
@@ -86,25 +85,38 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             )
 
         # Calculate the percentage with a security check
-        df_filtered_common_uniref["% of Chrono24"] = np.where(
-            df_filtered_C_uniref["count"].astype(str).str.isnumeric()
-            & (df_filtered_C_uniref["count"] != "0"),
-            round(
-                (
-                    df_filtered_common_uniref["count"]
-                    .replace("No reference shared for the moment.", 0)
-                    .astype(float)
-                    / df_filtered_C_uniref["count"].astype(float)
-                    * 100
-                ),
-                1,
-            ),
-            0,  # Assign 0 if the count in df_filtered_C_uniref is zero or not numeric
+        # Merge the filtered dataframes by brand
+        df_merged = df_filtered_common_uniref.merge(
+            df_filtered_C_uniref[["brand", "#"]],
+            on="brand",
+            suffixes=(" common", " CH24"),
+            how="left",
         )
+
+        # Replace non-numeric "#" values in the merged dataframe with 0 for calculation purposes
+        # Convert '# common' and '# CH24' to numeric, forcing errors to NaN, and then filling NaN with 0
+        df_merged["# common"] = pd.to_numeric(
+            df_merged["# common"], errors="coerce"
+        ).fillna(0)
+        df_merged["# CH24"] = pd.to_numeric(
+            df_merged["# CH24"], errors="coerce"
+        ).fillna(0)
+
+        # Calculate the percentage, handling division by zero cases
+        df_merged["% of Chrono24"] = np.where(
+            df_merged["# CH24"] > 0,  # Check if count is greater than zero
+            round(df_merged["# common"] / df_merged["# CH24"] * 100, 1),
+            0,  # Assign 0 if the count is zero
+        )
+
+        # Display the result in your Streamlit app
         st.write("\n \n<== # references shared ==>")
         st.dataframe(
-            df_filtered_common_uniref, use_container_width=False, hide_index=True
+            df_merged[["brand", "% of Chrono24", "# CH24", "# common"]],
+            use_container_width=False,
+            hide_index=True,
         )
+
     # =================================================================================
     # ---------- On Chrono24 datas
     st.markdown("---")
@@ -201,7 +213,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
 
         df_pourcent = (
-            df_filtered_C.groupby(["brand", "reference"])
+            df_filtered_common.groupby(["brand", "reference"])
             .agg(count=("reference", "count"))
             .reset_index()
         )
@@ -224,7 +236,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
             x="reference",
             y="percentage",
             color="brand",
-            title="Percentage of References by Brand - Chrono24 Data",
+            title="Percentage of References by Brand - Common data",
             labels={"percentage": "Percentage (%)"},
             text="percentage",
         )
