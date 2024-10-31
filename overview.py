@@ -155,7 +155,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         # Calculate the percentage
         df_pourcent["percentage"] = round(
             df_pourcent["count"] / df_pourcent["total_count"] * 100, 1
-        )  # Multiply by 100 for percentage
+        )
 
         # Drop the 'total_count'
         df_pourcent.drop(columns="total_count", inplace=True)
@@ -171,7 +171,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
         # Show the figure
         st.plotly_chart(
-            fig_percentage,
+            fig_percentage.update_xaxes(type="category"),
             use_container_width=True,
             key="chrono24_percentage_references",
         )
@@ -242,7 +242,7 @@ def show_overview(df_filtered_C, df_filtered_LT, selected_brands):
         )
         # Show the figure
         st.plotly_chart(
-            fig_percentage_common,
+            fig_percentage_common.update_xaxes(type="category"),
             use_container_width=True,
             key="common_percentage_references",
         )
