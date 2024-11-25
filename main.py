@@ -44,7 +44,7 @@ brands = df_chrono["brand"].unique()
 selected_brands = st.multiselect(
     "Select 3 Brands (max 3):",
     brands,
-    default=["Audemars Piguet", "Breitling", "Bulgari"],
+    default=["Audemars Piguet", "Bulgari", "Cartier"],
     max_selections=3,
 )
 
